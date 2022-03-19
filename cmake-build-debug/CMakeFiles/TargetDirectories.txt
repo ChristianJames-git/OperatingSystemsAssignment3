@@ -1,0 +1,3 @@
+D:/School/College/6th Semester/CS-480/OperatingSystemsAssignment3/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/School/College/6th Semester/CS-480/OperatingSystemsAssignment3/cmake-build-debug/CMakeFiles/OperatingSystemsAssignment3.dir
+D:/School/College/6th Semester/CS-480/OperatingSystemsAssignment3/cmake-build-debug/CMakeFiles/rebuild_cache.dir
