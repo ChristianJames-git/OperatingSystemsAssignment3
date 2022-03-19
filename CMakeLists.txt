@@ -3,4 +3,4 @@ project(OperatingSystemsAssignment3)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(OperatingSystemsAssignment3 main.cpp)
+add_executable(OperatingSystemsAssignment3 main.cpp output_mode_helpers.cpp output_mode_helpers.h)
