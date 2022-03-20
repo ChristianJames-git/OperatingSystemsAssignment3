@@ -1,11 +1,6 @@
 #include <cstdio>
 #include "output_mode_helpers.h"
 
-/* Handle C++ namespaces
- * C++ usually uses this #define to declare the C++ standard.
- */
-using namespace std;
-
 /*
  * report_virtual2physical(src, dest)
  * Given a pair of numbers, output a line: 
