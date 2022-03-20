@@ -2,6 +2,8 @@
 #include "output_mode_helpers.h"
 #include <getopt.h>
 
+#define DEFAULTC = 0
+
 int main(int argc, char **argv) {
     if (argc < 3) { //make sure correct args amount
         cout << "Please input correct number of inputs" << endl;
@@ -16,7 +18,12 @@ int main(int argc, char **argv) {
                 if (optarg) cout << "n:" << optarg << endl;
                 break;
             case 'c':
-                if (optarg) cout << "c:" << optarg << endl;
+                if (optarg && strtol(optarg, nullptr, 10) >= 0)
+                    cout << "c:" << optarg << endl;
+                else {
+                    cerr << "Cache capacity must be a number, greater than or equal to 0";
+                    exit(EXIT_FAILURE);
+                }
                 break;
             case 'o':
                 if (optarg) cout << "o:" << optarg << endl;
