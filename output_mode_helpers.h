@@ -13,8 +13,6 @@
  */
 #include <cstdint>
 
-using namespace std;
-
 /*
  * structure that can be used to maintain which output types are enabled.
  * Note that this uses the bool keyword.

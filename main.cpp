@@ -1,6 +1,7 @@
 #include <iostream>
 #include "output_mode_helpers.h"
 #include <getopt.h>
+#include "PageTable.h"
 
 #define DEFAULTN -1 //Process all addresses
 #define DEFAULTC 0 //no TLB caching
@@ -12,8 +13,8 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
     char* traceFile;
-    int temp = 0, mandatoryargs = 0;
-    int levels[argc];
+    int temp, mandatoryargs = 0;
+    vector<int> levels;
     int optionalints[2] = {DEFAULTN, DEFAULTC};
     char* optionaloutput = (char*)DEFAULTO;
     while ((temp = getopt (argc, argv, "-:n:c:o:")) != -1) {
@@ -38,11 +39,9 @@ int main(int argc, char **argv) {
                 if (optarg) {
                     if (mandatoryargs++ == 0) { //saves first mandatory arg as file name
                         traceFile = optarg;
-                        levels[0] = 0;
                     } else {
-                        levels[0];
                         if (strtol(optarg, nullptr, 10) > 1)
-                            levels[++levels[0]] = strtol(optarg, nullptr, 10);
+                            levels.push_back(strtol(optarg, nullptr, 10));
                         else {
                             cerr << "Level " << levels[0] << " page table must be at least 1 bit";
                             exit(EXIT_FAILURE);
@@ -54,18 +53,18 @@ int main(int argc, char **argv) {
         }
     }
     temp = 0;
-    for (int i = 1 ; i <= levels[0] ; i++)
-        temp += levels[i];
+    for (int level : levels)
+        temp += level;
     if (temp > 28) {
         cerr << "Too many bits used in page tables";
         exit(EXIT_FAILURE);
     }
+    auto* pt = new PageTable(optionalints[0], optionalints[1], optionaloutput, traceFile, levels);
     cout << "n:" << optionalints[0] << endl;
     cout << "c:" << optionalints[1] << endl;
     cout << "o:" << optionaloutput << endl;
     cout << "File: " << traceFile << endl;
-    cout << "Levels: " << levels[0] << endl;
-    for (int i = 1 ; i <= levels[0] ; i++) {
+    for (int i = 0 ; i < levels.size() ; i++) {
         cout << "Level " << i << ": " << levels[i] << endl;
     }
 }
