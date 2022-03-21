@@ -1,8 +1,6 @@
 #include "PageTable.h"
 #include "Level.h"
 
-#define ADDRESSSIZE 32
-
 PageTable::PageTable(int n, int c, char *o, char* file, vector<int> levelsBits) {
     //store values
     memoryaccesses = n;
@@ -17,8 +15,9 @@ PageTable::PageTable(int n, int c, char *o, char* file, vector<int> levelsBits) 
     bitshift.push_back(ADDRESSSIZE - levels[0]);
     for (int i = 1 ; i < maxDepth ; i++)
         bitshift.push_back(bitshift[i-1] - levels[i]);
-    for (int i = 0 ; i < maxDepth ; i++)
-        bitmask.push_back(levels[i]<<bitshift[i]);
+    for (int i = 0 ; i < maxDepth ; i++) {
+        bitmask.push_back((unsigned int)(pow(2, levels[i])-1) << bitshift[i]);
+    }
 }
 
 unsigned int PageTable::pageLookup(unsigned int virtualAddress) {
@@ -28,15 +27,16 @@ unsigned int PageTable::pageLookup(unsigned int virtualAddress) {
         if (!tempPtr) { //if ptr is null, mark as a miss, add the missing page, and return
             pagetablemisses++;
             pageInsert(virtualAddress);
-            return UINT_MAX;
+            return UINTMAX;
         }
     }
     unsigned int temp = tempPtr->getFrameMap(virtualAddressToPageNum(virtualAddress, bitmask[maxDepth], bitshift[maxDepth]));
-    if (temp == UINT_MAX) { //if frame mapping is missing, mark as a miss, add the missing frame mapping, and return
+    if (temp == UINTMAX) { //if frame mapping is missing, mark as a miss, add the missing frame mapping, and return
         pagetablemisses++;
         pageInsert(virtualAddress);
-        return UINT_MAX;
+        return UINTMAX;
     }
+    pagetablehits++;
     return temp; //return found frame number
 }
 

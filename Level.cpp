@@ -34,6 +34,6 @@ unsigned int Level::getFrameMap(unsigned int address) {
     try {
         return frameMap.at(address);
     } catch (const out_of_range& oor) {
-        return UINT_MAX;
+        return UINTMAX;
     }
 }

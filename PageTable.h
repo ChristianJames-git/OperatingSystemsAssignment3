@@ -3,6 +3,10 @@
 
 #include <vector>
 #include <iostream>
+#include <cmath>
+
+#define ADDRESSSIZE 32
+#define UINTMAX 4294967295
 
 using namespace std;
 

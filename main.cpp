@@ -2,6 +2,7 @@
 #include <getopt.h>
 #include "PageTable.h"
 #include "tracereader.h"
+#include <cstring>
 
 #define DEFAULTN -1 //Process all addresses
 #define DEFAULTC 0 //no TLB caching
@@ -43,7 +44,7 @@ int main(int argc, char **argv) {
                         if (strtol(optarg, nullptr, 10) > 1)
                             levels.push_back(strtol(optarg, nullptr, 10));
                         else {
-                            cerr << "Level " << levels[0] << " page table must be at least 1 bit";
+                            cerr << "Level " << levels.size() << " page table must be at least 1 bit";
                             exit(EXIT_FAILURE);
                         }
                     }
@@ -60,4 +61,7 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
     auto* pt = new PageTable(optionalints[0], optionalints[1], optionaloutput, traceFile, levels);
+    if (strcmp(optionaloutput, "bitmasks") == 0) {
+        report_bitmasks((int)pt->maxDepth, &pt->bitmask[0]);
+    }
 }
