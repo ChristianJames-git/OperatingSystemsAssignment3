@@ -1,6 +1,7 @@
 #include "output_mode_helpers.h"
 #include <getopt.h>
 #include "PageTable.h"
+#include "tracereader.h"
 
 #define DEFAULTN -1 //Process all addresses
 #define DEFAULTC 0 //no TLB caching
@@ -59,11 +60,4 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
     auto* pt = new PageTable(optionalints[0], optionalints[1], optionaloutput, traceFile, levels);
-    cout << "n:" << optionalints[0] << endl;
-    cout << "c:" << optionalints[1] << endl;
-    cout << "o:" << optionaloutput << endl;
-    cout << "File: " << traceFile << endl;
-    for (int i = 0 ; i < levels.size() ; i++) {
-        cout << "Level " << i << ": " << levels[i] << endl;
-    }
 }
