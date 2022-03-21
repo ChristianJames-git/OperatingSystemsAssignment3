@@ -1,4 +1,3 @@
-#include <iostream>
 #include "output_mode_helpers.h"
 #include <getopt.h>
 #include "PageTable.h"
