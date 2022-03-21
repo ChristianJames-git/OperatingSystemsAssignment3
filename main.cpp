@@ -2,7 +2,9 @@
 #include "output_mode_helpers.h"
 #include <getopt.h>
 
-#define DEFAULTC = 0
+#define DEFAULTN -1 //Process all addresses
+#define DEFAULTC 0 //no TLB caching
+#define DEFAULTO "summary" //Show summary stats
 
 int main(int argc, char **argv) {
     if (argc < 3) { //make sure correct args amount
@@ -12,21 +14,25 @@ int main(int argc, char **argv) {
     char* traceFile;
     int temp = 0, mandatoryargs = 0;
     int levels[argc];
+    int optionalints[2] = {DEFAULTN, DEFAULTC};
+    char* optionaloutput = (char*)DEFAULTO;
     while ((temp = getopt (argc, argv, "-:n:c:o:")) != -1) {
         switch (temp) {
             case 'n':
-                if (optarg) cout << "n:" << optarg << endl;
+                if (optarg)
+                    if (strtol(optarg, nullptr, 10) >= 0)
+                        optionalints[0] = strtol(optarg, nullptr, 10);
                 break;
             case 'c':
                 if (optarg && strtol(optarg, nullptr, 10) >= 0) //ensures cache capacity is at least 0
-                    cout << "c:" << optarg << endl;
+                    optionalints[1] = strtol(optarg, nullptr, 10);
                 else {
                     cerr << "Cache capacity must be a number, greater than or equal to 0";
                     exit(EXIT_FAILURE);
                 }
                 break;
             case 'o':
-                if (optarg) cout << "o:" << optarg << endl;
+                optionaloutput = optarg;
                 break;
             case 1: //mandatory args
                 if (optarg) {
@@ -51,10 +57,14 @@ int main(int argc, char **argv) {
     for (int i = 1 ; i <= levels[0] ; i++)
         temp += levels[i];
     if (temp > 28) {
-        cerr << "Too many bits used in page table";
+        cerr << "Too many bits used in page tables";
         exit(EXIT_FAILURE);
     }
+    cout << "n:" << optionalints[0] << endl;
+    cout << "c:" << optionalints[1] << endl;
+    cout << "o:" << optionaloutput << endl;
     cout << "File: " << traceFile << endl;
+    cout << "Levels: " << levels[0] << endl;
     for (int i = 1 ; i <= levels[0] ; i++) {
         cout << "Level " << i << ": " << levels[i] << endl;
     }
