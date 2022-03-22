@@ -1,8 +1,6 @@
 #include "output_mode_helpers.h"
 #include <getopt.h>
-#include "PageTable.h"
-#include "tracereader.h"
-#include <cstring>
+#include "paging.h"
 
 #define DEFAULTN -1 //Process all addresses
 #define DEFAULTC 0 //no TLB caching
@@ -61,8 +59,12 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
     auto* pt = new PageTable(optionalints[0], optionalints[1], optionaloutput, traceFile, levels);
+    auto* pagingPtr = new paging(pt);
+    pagingPtr->readTrace();
     if (strcmp(optionaloutput, "bitmasks") == 0) {
         report_bitmasks((int)pt->maxDepth, &pt->bitmask[0]);
         exit(EXIT_SUCCESS);
+    } else if (strcmp(optionaloutput, "virtual2physical") == 0) {
+
     }
 }
