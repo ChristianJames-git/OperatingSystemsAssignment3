@@ -9,34 +9,37 @@ PageTable::PageTable(int n, int c, char *o, char* file, vector<int> levelsBits) 
     inputfile = file;
     levels = move(levelsBits);
     maxDepth = levels.size();
+    for (int level : levels)
+        offsetsize -= level;
     //create root
     Level0 = new Level(0, this);
     //calculate bitshift and bitmask
     bitshift.push_back(ADDRESSSIZE - levels[0]);
     for (int i = 1 ; i < maxDepth ; i++)
         bitshift.push_back(bitshift[i-1] - levels[i]);
-    for (int i = 0 ; i < maxDepth ; i++) {
+    for (int i = 0 ; i < maxDepth ; i++)
         bitmask.push_back((unsigned int)(pow(2, levels[i])-1) << bitshift[i]);
-    }
+    offsetbitmask = (unsigned int)(pow(2, offsetsize)-1);
 }
 
 unsigned int PageTable::pageLookup(unsigned int virtualAddress) {
     Level* tempPtr = Level0;
     for (int i = 0 ; i < maxDepth-1 ; i++) {
-        tempPtr = tempPtr->getLevelPtr(virtualAddressToPageNum(virtualAddress, bitmask[i], bitshift[i]));
+        tempPtr = tempPtr->getLevelPtr(virtualAddress);
         if (!tempPtr) { //if ptr is null, mark as a miss, add the missing page, and return
             pagetablemisses++;
             pageInsert(virtualAddress);
             return UINTMAX;
         }
     }
-    unsigned int temp = tempPtr->getFrameMap(virtualAddressToPageNum(virtualAddress, bitmask[maxDepth], bitshift[maxDepth]));
+    unsigned int temp = tempPtr->getFrameMap(virtualAddressToPageNum(virtualAddress, bitmask[maxDepth-1], bitshift[maxDepth-1]));
     if (temp == UINTMAX) { //if frame mapping is missing, mark as a miss, add the missing frame mapping, and return
         pagetablemisses++;
         pageInsert(virtualAddress);
         return UINTMAX;
     }
     pagetablehits++;
+    temp = temp
     return temp; //return found frame number
 }
 
@@ -46,16 +49,12 @@ unsigned int PageTable::virtualAddressToPageNum(unsigned int virtualAddress, uns
     return temp;
 }
 
-void PageTable::pageInsert(unsigned int virtualAddress) {
-    Level* tempPtr = Level0;
-    Level* prevPtr;
-    for (int i = 0 ; i < maxDepth-1 ; i++) {
+void PageTable::pageInsert(unsigned int virtualAddress) const {
+    Level* tempPtr = Level0->getLevelPtr(virtualAddress);
+    Level* prevPtr = Level0;
+    while (tempPtr) {
         prevPtr = tempPtr;
-        tempPtr = tempPtr->getLevelPtr(virtualAddressToPageNum(virtualAddress, bitmask[i], bitshift[i]));
-        if (!tempPtr) {
-            prevPtr->addLevelPtr(virtualAddressToPageNum(virtualAddress, bitmask[i], bitshift[i]));
-            tempPtr = prevPtr->getLevelPtr(virtualAddressToPageNum(virtualAddress, bitmask[i], bitshift[i]));
-        }
+        tempPtr = tempPtr->getLevelPtr(virtualAddress);
     }
-    tempPtr->addFrameMap(virtualAddressToPageNum(virtualAddress, bitmask[maxDepth], bitshift[maxDepth]));
+    prevPtr->addLevelPtr(virtualAddress);
 }

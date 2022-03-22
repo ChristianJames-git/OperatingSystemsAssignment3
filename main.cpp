@@ -63,5 +63,6 @@ int main(int argc, char **argv) {
     auto* pt = new PageTable(optionalints[0], optionalints[1], optionaloutput, traceFile, levels);
     if (strcmp(optionaloutput, "bitmasks") == 0) {
         report_bitmasks((int)pt->maxDepth, &pt->bitmask[0]);
+        exit(EXIT_SUCCESS);
     }
 }

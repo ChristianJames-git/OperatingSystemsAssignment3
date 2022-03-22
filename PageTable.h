@@ -16,16 +16,18 @@ class PageTable {
 public:
     PageTable(int n, int c, char* o, char* file, vector<int> levels);
     unsigned int pageLookup(unsigned int virtualAddress);
-    void pageInsert(unsigned int virtualAddress);
+    void pageInsert(unsigned int virtualAddress) const;
     static unsigned int virtualAddressToPageNum (unsigned int virtualAddress, unsigned int mask, unsigned int shift);
     Level* Level0;
     int memoryaccesses, cachecap;
     char* outputmode;
     vector<int> levels;
+    int offsetsize = 32;
     char* inputfile;
     int cachehits{}, pagetablehits{}, pagetablemisses{};
     unsigned int frameindex = 0;
     vector<unsigned int> bitmask;
+    unsigned int offsetbitmask;
     vector<int> bitshift;
     unsigned int maxDepth;
 private:

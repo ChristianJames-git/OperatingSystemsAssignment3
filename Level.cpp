@@ -6,25 +6,21 @@ Level::Level(int depth, PageTable* pagetable) {
 }
 
 void Level::addLevelPtr(unsigned int address) {
-    if (depth >= pt->maxDepth) {
-        cout << "Cannot add level to leaf node" << endl;
-        exit(EXIT_FAILURE);
-    }
-    auto* temp = new Level(depth+1, pt);
-    nextLevelPtr.insert(pair<unsigned int, Level*>(address, temp));
+    if (depth < pt->maxDepth - 1) {
+        auto* temp = new Level(depth+1, pt);
+        nextLevelPtr.insert(pair<unsigned int, Level*>(PageTable::virtualAddressToPageNum(address, pt->bitmask[depth], pt->bitshift[depth]), temp));
+        temp->addLevelPtr(address);
+    } else
+        addFrameMap(address);
 }
 
 void Level::addFrameMap(unsigned int address) {
-    if (depth < pt->maxDepth) {
-        cout << "Cannot add mapping to interior node" << endl;
-        exit(EXIT_FAILURE);
-    }
-    frameMap.insert(pair<unsigned int, unsigned int>(address, pt->frameindex++));
+    frameMap.insert(pair<unsigned int, unsigned int>(PageTable::virtualAddressToPageNum(address, pt->bitmask[depth], pt->bitshift[depth]), pt->frameindex++));
 }
 
 Level *Level::getLevelPtr(unsigned int address) {
     try {
-        return nextLevelPtr.at(address);
+        return nextLevelPtr.at(PageTable::virtualAddressToPageNum(address, pt->bitmask[depth], pt->bitshift[depth]));
     } catch (const out_of_range& oor) {
         return nullptr;
     }
