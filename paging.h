@@ -17,10 +17,10 @@
 class paging {
 public:
     explicit paging(PageTable* pt);
-    bool readTrace();
+    void readTrace();
 private:
     void openFile();
-    FILE* inFile;
+    FILE* inFile{};
     PageTable* pt;
     int outputMode;
 };

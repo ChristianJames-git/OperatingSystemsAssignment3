@@ -20,31 +20,38 @@ void paging::openFile() {
     }
 }
 
-bool paging::readTrace() {
+void paging::readTrace() {
     p2AddrTr mtrace;
     unsigned int vAddr;
     unsigned int temp;
+    uint32_t levelAddresses[pt->maxDepth];
     if (outputMode == OBITMASK) {
         report_bitmasks((int)pt->maxDepth, &pt->bitmask[0]);
-        return true;
+        return;
     }
     while((pt->pagetablehits + pt->pagetablemisses) < pt->memoryaccesses && NextAddress(inFile, &mtrace)) {
         vAddr = mtrace.addr;
         switch (outputMode) {
             case OV2PADDRESS:
                 temp = pt->pageLookup(vAddr);
-                report_virtual2physical(vAddr, (temp<<pt->offsetsize) + pt->offsetbitmask & vAddr);
+                report_virtual2physical(vAddr, (temp<<pt->offsetsize) + (pt->offsetbitmask & vAddr));
                 break;
             case OV2PADDRESS_TLB:
                 cout << "not done yet" << endl;
                 break;
             case OV2PNUMBER:
+                for (int i = 0 ; i < pt->maxDepth ; i++)
+                    levelAddresses[i] = PageTable::virtualAddressToPageNum(vAddr, pt->bitmask[i], pt->bitshift[i]);
+                report_pagemap((int)pt->maxDepth, levelAddresses, pt->pageLookup(vAddr));
                 break;
             case OOFFSET:
                 hexnum(pt->offsetbitmask & vAddr);
                 break;
             case OSUMMARY:
+                pt->pageLookup(vAddr);
                 break;
         }
     }
+    if (outputMode == OSUMMARY)
+        report_summary((unsigned int)pow(2, pt->offsetsize), pt->cachehits, pt->pagetablehits, pt->cachehits + pt->pagetablehits + pt->pagetablemisses, pt->frameindex, 0);
 }
