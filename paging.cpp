@@ -53,5 +53,5 @@ void paging::readTrace() {
         }
     }
     if (outputMode == OSUMMARY)
-        report_summary((unsigned int)pow(2, pt->offsetsize), pt->cachehits, pt->pagetablehits, pt->cachehits + pt->pagetablehits + pt->pagetablemisses, pt->frameindex, pt->totalBytes);
+        report_summary((unsigned int)pow(2, pt->offsetsize), pt->cachehits, pt->pagetablehits, pt->cachehits + pt->pagetablehits + pt->pagetablemisses, pt->frameindex, pt->totalLevels);
 }

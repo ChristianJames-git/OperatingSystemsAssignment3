@@ -4,13 +4,14 @@ Level::Level(int depth, PageTable* pagetable) {
     this->depth = depth;
     pt = pagetable;
     pt->totalBytes += sizeof(nextLevelPtr) + sizeof(frameMap); //Add base map bytes
+    pt->totalLevels++;
 }
 
 unsigned int Level::addLevelPtr(unsigned int address) {
     if (depth < pt->maxDepth - 1) {
         auto* temp = new Level(depth+1, pt);
         pair<unsigned int, Level*> a = pair<unsigned int, Level*>(PageTable::virtualAddressToPageNum(address, pt->bitmask[depth], pt->bitshift[depth]), temp);
-        pt->totalBytes += sizeof(a);
+        pt->totalBytes += sizeof(a) + sizeof(*temp);
         nextLevelPtr.insert(a);
         return temp->addLevelPtr(address);
     } else
@@ -21,6 +22,7 @@ unsigned int Level::addFrameMap(unsigned int address) {
     pair<unsigned int, unsigned int> a = pair<unsigned int, unsigned int>(PageTable::virtualAddressToPageNum(address, pt->bitmask[depth], pt->bitshift[depth]), pt->frameindex);
     pt->totalBytes += sizeof(a);
     frameMap.insert(a);
+    pt->totalBytes += (unsigned int)pow(2, pt->offsetsize);
     return pt->frameindex++;
 }
 
