@@ -1,5 +1,4 @@
 #include "paging.h"
-#include "tracereader.h"
 
 paging::paging(PageTable *pt) {
     this->pt = pt;
@@ -21,10 +20,31 @@ void paging::openFile() {
     }
 }
 
-void paging::readTrace() {
+bool paging::readTrace() {
     p2AddrTr mtrace;
     unsigned int vAddr;
-    while(NextAddress(inFile, &mtrace)) {
+    unsigned int temp;
+    if (outputMode == OBITMASK) {
+        report_bitmasks((int)pt->maxDepth, &pt->bitmask[0]);
+        return true;
+    }
+    while((pt->pagetablehits + pt->pagetablemisses) < pt->memoryaccesses && NextAddress(inFile, &mtrace)) {
         vAddr = mtrace.addr;
+        switch (outputMode) {
+            case OV2PADDRESS:
+                temp = pt->pageLookup(vAddr);
+                report_virtual2physical(vAddr, (temp<<pt->offsetsize) + pt->offsetbitmask & vAddr);
+                break;
+            case OV2PADDRESS_TLB:
+                cout << "not done yet" << endl;
+                break;
+            case OV2PNUMBER:
+                break;
+            case OOFFSET:
+                hexnum(pt->offsetbitmask & vAddr);
+                break;
+            case OSUMMARY:
+                break;
+        }
     }
 }

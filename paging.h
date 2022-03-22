@@ -9,13 +9,15 @@
 #define OSUMMARY 5
 
 #include "PageTable.h"
+#include "output_mode_helpers.h"
+#include "tracereader.h"
 #include <cstring>
 #include <fstream>
 
 class paging {
 public:
     explicit paging(PageTable* pt);
-    void readTrace();
+    bool readTrace();
 private:
     void openFile();
     FILE* inFile;

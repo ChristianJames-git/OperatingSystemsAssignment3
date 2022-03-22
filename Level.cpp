@@ -5,17 +5,18 @@ Level::Level(int depth, PageTable* pagetable) {
     pt = pagetable;
 }
 
-void Level::addLevelPtr(unsigned int address) {
+unsigned int Level::addLevelPtr(unsigned int address) {
     if (depth < pt->maxDepth - 1) {
         auto* temp = new Level(depth+1, pt);
         nextLevelPtr.insert(pair<unsigned int, Level*>(PageTable::virtualAddressToPageNum(address, pt->bitmask[depth], pt->bitshift[depth]), temp));
-        temp->addLevelPtr(address);
+        return temp->addLevelPtr(address);
     } else
-        addFrameMap(address);
+        return addFrameMap(address);
 }
 
-void Level::addFrameMap(unsigned int address) {
-    frameMap.insert(pair<unsigned int, unsigned int>(PageTable::virtualAddressToPageNum(address, pt->bitmask[depth], pt->bitshift[depth]), pt->frameindex++));
+unsigned int Level::addFrameMap(unsigned int address) {
+    frameMap.insert(pair<unsigned int, unsigned int>(PageTable::virtualAddressToPageNum(address, pt->bitmask[depth], pt->bitshift[depth]), pt->frameindex));
+    return pt->frameindex++;
 }
 
 Level *Level::getLevelPtr(unsigned int address) {

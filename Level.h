@@ -7,8 +7,8 @@
 class Level {
 public:
     Level(int depth, PageTable* pagetable);
-    void addLevelPtr(unsigned int);
-    void addFrameMap(unsigned int);
+    unsigned int addLevelPtr(unsigned int);
+    unsigned int addFrameMap(unsigned int);
     Level* getLevelPtr(unsigned int);
     unsigned int getFrameMap(unsigned int);
     PageTable* pt;
