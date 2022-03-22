@@ -30,6 +30,7 @@ public:
     unsigned int offsetbitmask;
     vector<int> bitshift;
     unsigned int maxDepth;
+    unsigned int totalBytes = 0;
 private:
 };
 
