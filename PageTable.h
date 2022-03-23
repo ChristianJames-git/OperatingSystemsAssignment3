@@ -31,8 +31,11 @@ public:
     vector<int> bitshift;
     unsigned int maxDepth;
     unsigned int totalBytes = 0;
-    unsigned int totalLevels = 0;
 private:
+};
+
+struct Map {
+    unsigned int frameNumber;
 };
 
 

@@ -35,13 +35,13 @@ unsigned int PageTable::pageLookup(unsigned int virtualAddress) {
             return pageInsert(virtualAddress);
         }
     }
-    unsigned int temp = tempPtr->getFrameMap(virtualAddressToPageNum(virtualAddress, bitmask[maxDepth-1], bitshift[maxDepth-1]));
-    if (temp == UINTMAX) { //if frame mapping is missing, mark as a miss, add the missing frame mapping, and return
+    Map* temp = tempPtr->getFrameMap(virtualAddressToPageNum(virtualAddress, bitmask[maxDepth-1], bitshift[maxDepth-1]));
+    if (!temp) { //if frame mapping is missing, mark as a miss, add the missing frame mapping, and return
         pagetablemisses++;
         return pageInsert(virtualAddress);
     }
     pagetablehits++;
-    return temp; //return found frame number
+    return temp->frameNumber; //return found frame number
 }
 
 unsigned int PageTable::virtualAddressToPageNum(unsigned int virtualAddress, unsigned int mask, unsigned int shift) {

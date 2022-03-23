@@ -2,7 +2,7 @@
 #define OPERATINGSYSTEMSASSIGNMENT3_LEVEL_H
 
 #include "PageTable.h"
-#include <map>
+#include <array>
 
 class Level {
 public:
@@ -10,12 +10,12 @@ public:
     unsigned int addLevelPtr(unsigned int);
     unsigned int addFrameMap(unsigned int);
     Level* getLevelPtr(unsigned int);
-    unsigned int getFrameMap(unsigned int);
+    Map* getFrameMap(unsigned int);
     PageTable* pt;
 private:
     int depth;
-    map<unsigned int, Level*> nextLevelPtr;
-    map<unsigned int, unsigned int> frameMap;
+    Level** nextLevelPtr;
+    Map** frameMap;
 };
 
 
