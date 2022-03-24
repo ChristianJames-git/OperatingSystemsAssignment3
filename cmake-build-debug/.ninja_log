@@ -71,3 +71,17 @@
 293	422	6697414390828180	OperatingSystemsAssignment3.exe	2dc98502171f9f47
 2	281	6697414578447905	CMakeFiles/OperatingSystemsAssignment3.dir/Level.cpp.obj	a7722a70dbcf0587
 281	412	6697414579734463	OperatingSystemsAssignment3.exe	2dc98502171f9f47
+25	525	6697915632709821	CMakeFiles/OperatingSystemsAssignment3.dir/Level.cpp.obj	a7722a70dbcf0587
+20	525	6697915632719798	CMakeFiles/OperatingSystemsAssignment3.dir/paging.cpp.obj	817f94e769710ff6
+2	530	6697915632769910	CMakeFiles/OperatingSystemsAssignment3.dir/main.cpp.obj	252f2a1c589d6db5
+22	534	6697915632799587	CMakeFiles/OperatingSystemsAssignment3.dir/PageTable.cpp.obj	2be69f2ebb8bc7f0
+19	396	6698001972745355	CMakeFiles/OperatingSystemsAssignment3.dir/tlbhandling.cpp.obj	6d37697367ef1f58
+16	447	6698001973273931	CMakeFiles/OperatingSystemsAssignment3.dir/paging.cpp.obj	817f94e769710ff6
+3	480	6698001973613019	CMakeFiles/OperatingSystemsAssignment3.dir/main.cpp.obj	252f2a1c589d6db5
+481	904	6698001977801812	OperatingSystemsAssignment3.exe	2dc98502171f9f47
+28	385	6698034197252100	CMakeFiles/OperatingSystemsAssignment3.dir/paging.cpp.obj	817f94e769710ff6
+2	408	6698034197501421	CMakeFiles/OperatingSystemsAssignment3.dir/main.cpp.obj	252f2a1c589d6db5
+30	425	6698034197670969	CMakeFiles/OperatingSystemsAssignment3.dir/tlbhandling.cpp.obj	6d37697367ef1f58
+425	577	6698034199147407	OperatingSystemsAssignment3.exe	2dc98502171f9f47
+2	342	6698035506825504	CMakeFiles/OperatingSystemsAssignment3.dir/paging.cpp.obj	817f94e769710ff6
+342	478	6698035508172248	OperatingSystemsAssignment3.exe	2dc98502171f9f47

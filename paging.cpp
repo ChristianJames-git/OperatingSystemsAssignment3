@@ -24,31 +24,90 @@ void paging::readTrace() {
     p2AddrTr mtrace;
     unsigned int vAddr;
     unsigned int temp;
+    tlbhandling* tlb;
+    tlbIndex* tempTLB = nullptr;
     uint32_t levelAddresses[pt->maxDepth];
     if (outputMode == OBITMASK) {
         report_bitmasks((int)pt->maxDepth, &pt->bitmask[0]);
         return;
     }
+    if (pt->cachecap != 0)
+        tlb = new tlbhandling(pt);
     while((pt->pagetablehits + pt->pagetablemisses) < pt->memoryaccesses && NextAddress(inFile, &mtrace)) {
         vAddr = mtrace.addr;
         switch (outputMode) {
             case OV2PADDRESS:
-                temp = pt->pageLookup(vAddr);
+                if (pt->cachecap != 0)
+                    tempTLB = tlb->tlbSearch(PageTable::virtualAddressToPageNum(vAddr, pt->vpnmask, pt->vpnshift));
+                if (!tempTLB) {
+                    temp = pt->pageLookup(vAddr);
+                    if (pt->cachecap != 0) tlb->addToTLB(PageTable::virtualAddressToPageNum(vAddr, pt->vpnmask, pt->vpnshift), temp);
+                }
+                else
+                    temp = tempTLB->frame;
                 report_virtual2physical(vAddr, (temp<<pt->offsetsize) + (pt->offsetbitmask & vAddr));
                 break;
             case OV2PADDRESS_TLB:
-                cout << "not done yet" << endl;
+                if (pt->cachecap != 0) {
+                    tempTLB = tlb->tlbSearch(PageTable::virtualAddressToPageNum(vAddr, pt->vpnmask, pt->vpnshift));
+                    if (!tempTLB) {
+                        pt->cachehit = false;
+                        temp = pt->pageLookup(vAddr);
+                        if (pt->pagetablehit)
+                            pt->pagetablehits++;
+                        else
+                            pt->pagetablemisses++;
+                        tlb->addToTLB(PageTable::virtualAddressToPageNum(vAddr, pt->vpnmask, pt->vpnshift), temp);
+                    } else {
+                        temp = tempTLB->frame;
+                        pt->cachehit = true;
+                        pt->cachehits++;
+                    }
+                } else {
+                    temp = pt->pageLookup(vAddr);
+                    if (pt->pagetablehit)
+                        pt->pagetablehits++;
+                    else
+                        pt->pagetablemisses++;
+                }
+                report_v2pUsingTLB_PTwalk(vAddr, (temp<<pt->offsetsize) + (pt->offsetbitmask & vAddr), pt->cachehit, pt->pagetablehit);
                 break;
             case OV2PNUMBER:
+                if (pt->cachecap != 0)
+                    tempTLB = tlb->tlbSearch(PageTable::virtualAddressToPageNum(vAddr, pt->vpnmask, pt->vpnshift));
+                if (!tempTLB) {
+                    temp = pt->pageLookup(vAddr);
+                    if (pt->cachecap != 0) tlb->addToTLB(PageTable::virtualAddressToPageNum(vAddr, pt->vpnmask, pt->vpnshift), temp);
+                } else
+                    temp = tempTLB->frame;
                 for (int i = 0 ; i < pt->maxDepth ; i++)
                     levelAddresses[i] = PageTable::virtualAddressToPageNum(vAddr, pt->bitmask[i], pt->bitshift[i]);
-                report_pagemap((int)pt->maxDepth, levelAddresses, pt->pageLookup(vAddr));
+                report_pagemap((int)pt->maxDepth, levelAddresses, temp);
                 break;
             case OOFFSET:
                 hexnum(pt->offsetbitmask & vAddr);
                 break;
             case OSUMMARY:
-                pt->pageLookup(vAddr);
+                if (pt->cachecap != 0) {
+                    tempTLB = tlb->tlbSearch(PageTable::virtualAddressToPageNum(vAddr, pt->vpnmask, pt->vpnshift));
+                    if (!tempTLB) {
+                        temp = pt->pageLookup(vAddr);
+                        if (pt->pagetablehit)
+                            pt->pagetablehits++;
+                        else
+                            pt->pagetablemisses++;
+                        tlb->addToTLB(PageTable::virtualAddressToPageNum(vAddr, pt->vpnmask, pt->vpnshift), temp);
+                    } else {
+                        temp = tempTLB->frame;
+                        pt->cachehits++;
+                    }
+                } else {
+                    temp = pt->pageLookup(vAddr);
+                    if (pt->pagetablehit)
+                        pt->pagetablehits++;
+                    else
+                        pt->pagetablemisses++;
+                }
                 break;
         }
     }

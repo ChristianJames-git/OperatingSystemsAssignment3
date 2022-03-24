@@ -11,6 +11,7 @@
 #include "PageTable.h"
 #include "output_mode_helpers.h"
 #include "tracereader.h"
+#include "tlbhandling.h"
 #include <cstring>
 #include <fstream>
 

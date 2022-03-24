@@ -33,6 +33,7 @@ public:
     unsigned int vpnshift;
     unsigned int maxDepth;
     unsigned int totalBytes = 0;
+    bool cachehit = false, pagetablehit = false;
 private:
 };
 
