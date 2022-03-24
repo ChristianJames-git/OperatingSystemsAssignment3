@@ -20,6 +20,8 @@ PageTable::PageTable(int n, int c, char *o, char* file, vector<int> levelsBits) 
     for (int i = 0 ; i < maxDepth ; i++)
         bitmask.push_back((unsigned int)(pow(2, levels[i])-1) << bitshift[i]);
     offsetbitmask = (unsigned int)(pow(2, offsetsize)-1);
+    vpnshift = offsetsize;
+    vpnmask = (unsigned int)(pow(2, ADDRESSSIZE - offsetsize)-1) << vpnshift;
 
     totalBytes += sizeof(memoryaccesses) + sizeof(cachecap) + sizeof(outputmode) + sizeof(inputfile) + sizeof(levels) + sizeof(maxDepth) + sizeof(offsetsize)
             + sizeof(Level0) + sizeof(bitshift) + sizeof(bitmask) + sizeof(offsetbitmask) + sizeof(cachehits) + sizeof(pagetablehits) + sizeof(pagetablemisses)

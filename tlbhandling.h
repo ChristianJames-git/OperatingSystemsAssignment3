@@ -3,7 +3,7 @@
 
 
 class tlbhandling {
-
+    tlbhandling();
 };
 
 

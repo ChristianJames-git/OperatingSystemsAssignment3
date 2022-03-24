@@ -28,7 +28,9 @@ public:
     unsigned int frameindex = 0;
     vector<unsigned int> bitmask;
     unsigned int offsetbitmask;
+    unsigned int vpnmask;
     vector<int> bitshift;
+    unsigned int vpnshift;
     unsigned int maxDepth;
     unsigned int totalBytes = 0;
 private:
