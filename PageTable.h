@@ -14,7 +14,7 @@ class Level;
 
 class PageTable {
 public:
-    PageTable(int n, int c, char* o, char* file, vector<int> levels);
+    PageTable(unsigned int n, unsigned int c, char* o, char* file, vector<int> levels);
     unsigned int pageLookup(unsigned int virtualAddress);
     unsigned int pageInsert(unsigned int virtualAddress) const;
     static unsigned int virtualAddressToPageNum (unsigned int virtualAddress, unsigned int mask, unsigned int shift);
@@ -34,7 +34,6 @@ public:
     unsigned int maxDepth;
     unsigned int totalBytes = 0;
     bool cachehit = false, pagetablehit = false;
-private:
 };
 
 struct Map {
